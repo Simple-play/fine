@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fine Calculator</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+    
+    body {
+    background: linear-gradient(135deg, #74ebd5, #acb6e5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    }
+    
+    h3 {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 2rem;
+    text-align: center;
+    }
+    
+    .calculator-container {
+    width: 100%;
+    max-width: 500px;
+    padding: 30px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    }
+    
+    .form-group label {
+    font-weight: bold;
+    color: #333;
+    text-align: left; /* Align labels to the left */
+    width: 100%; /* Ensure label takes full width */
+    display: block; /* Make label a block element */
+    margin-bottom: 5px; /* Add space below labels */
+    }
+    
+    .form-control-lg {
+    font-size: 1.25rem;
+    padding: 12px;
+    width: 100%; /* Ensure input takes full width */
+    margin-bottom: 15px; /* Add space below inputs */
+    }
+    
+    .btn-calculate {
+    background-color: #007bff;
+    color: white;
+    border-radius: 25px;
+    padding: 10px 20px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    }
+    
+    .btn-calculate:hover {
+    background-color: #0056b3;
+    color:silver;
+    }
+    
+    .toggle-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    }
+    
+    .toggle-btn {
+    font-size: 1.1rem;
+    cursor: pointer;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    flex: 1;
+    }
+    
+    .toggle-btn.active {
+    background-color: #007bff;
+    color: white;
+    }
+    
+    .toggle-btn.inactive {
+    background-color: #d3d3d3;
+    color: #666;
+    }
+    
+    .result {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #007bff;
+    margin-top: 20px;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    }
+    
+    .result.show {
+    opacity: 1;
+    }
+    
+    .table-container {
+    margin-top: 20px;
+    }
+    
+    #monthlyFineBtn {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+    }
+    
+    #interestFineBtn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    }
+    
+    /* Styling 
+    body {
+    background: linear-gradient(135deg, #74ebd5, #acb6e5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    }
+    h3 { font-weight: bold; color: #333; margin-bottom: 20px; font-size: 2rem; text-align: center; }
+    .calculator-container { width: 100%; max-width: 500px; padding: 30px; background: white; border-radius: 15px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); text-align: center; }
+    .form-control-lg { font-size: 1.25rem; padding: 12px; }
+    .btn-calculate { background-color: #007bff; color: white; border-radius: 25px; padding: 10px 20px; font-weight: bold; transition: background-color 0.3s ease; }
+    .btn-calculate:hover { background-color: #0056b3; }
+    .toggle-container { display: flex; justify-content: center; align-items: center; margin-bottom: 20px; }
+    .toggle-btn { font-size: 1.1rem; cursor: pointer; border: none; padding: 10px 20px; border-radius: 10px; font-weight: bold; transition: background-color 0.3s ease; flex: 1; }
+    .toggle-btn.active { background-color: #007bff; color: white; }
+    .toggle-btn.inactive { background-color: #d3d3d3; color: #666; }
+    .result { font-size: 1.3rem; font-weight: bold; color: #007bff; margin-top: 20px; opacity: 0; transition: opacity 0.5s ease; }
+    .result.show { opacity: 1; }
+    .table-container { margin-top: 20px; }
+    #monthlyFineBtn { border-bottom-right-radius: 0; border-top-right-radius: 0; }
+    #interestFineBtn { border-top-left-radius: 0; border-bottom-left-radius: 0; }
+
+        /* Styling omitted for brevity */
+    </style>
+</head>
+<body onload="initializeCalculator()">
+
+<h3 id="calculatorTitle">Fine Calculator</h3>
+
+<div class="calculator-container">
+    <div class="toggle-container">
+        <button id="monthlyFineBtn" class="toggle-btn active" onclick="toggleCalculator('monthly')">Monthly Fine</button>
+        <button id="interestFineBtn" class="toggle-btn inactive" onclick="toggleCalculator('interest')">Interest Fine</button>
+    </div>
+
+    <form id="fineForm">
+        <div class="form-group" id="monthlyFineForm">
+            <label for="monthsLate"><b>Enter Months Late</b></label>
+            <input type="number" class="form-control form-control-lg" id="monthsLate" min="1" placeholder="Late Months" required>
+            <label for="monthlyAmount"><b>How much money to pay monthly</b></label>
+            <input type="number" class="form-control form-control-lg" id="monthlyAmount" min="1" placeholder="Monthly Amount" required>
+        </div>
+        <div class="form-group" id="interestFineForm" style="display: none;">
+            <label for="daysLate">Enter Days Late:</label>
+            <input type="number" class="form-control form-control-lg" id="daysLate" min="1" placeholder="Enter number of days" required>
+        </div>
+        <button type="button" onclick="calculateFine()" class="btn btn-calculate btn-block">Calculate Fine</button>
+    </form>
+    <div class="result" id="result"></div>
+    <div class="table-container" id="tableContainer"></div>
+</div>
+
+<script>
+  
+    function initializeCalculator() {
+        toggleCalculator('monthly'); // Set Monthly Fine as default view
+    }
+
+    function toggleCalculator(type) {
+        const monthlyFineBtn = document.getElementById("monthlyFineBtn");
+        const interestFineBtn = document.getElementById("interestFineBtn");
+        const monthlyFineForm = document.getElementById("monthlyFineForm");
+        const interestFineForm = document.getElementById("interestFineForm");
+        const calculatorTitle = document.getElementById("calculatorTitle");
+        const tableContainer = document.getElementById("tableContainer");
+        const resultDiv = document.getElementById("result");
+
+        // Reset result and table
+        resultDiv.classList.remove("show");
+        tableContainer.innerHTML = "";
+
+        if (type === 'monthly') {
+            // Set to Monthly Fine
+            monthlyFineBtn.classList.add("active");
+            monthlyFineBtn.classList.remove("inactive");
+            interestFineBtn.classList.add("inactive");
+            interestFineBtn.classList.remove("active");
+            monthlyFineForm.style.display = "block";
+            interestFineForm.style.display = "none";
+            calculatorTitle.innerHTML = "<b>Monthly</b> Fine Calculator";
+        } else {
+            // Set to Interest Late Fine
+            interestFineBtn.classList.add("active");
+            interestFineBtn.classList.remove("inactive");
+            monthlyFineBtn.classList.add("inactive");
+            monthlyFineBtn.classList.remove("active");
+            interestFineForm.style.display = "block";
+            monthlyFineForm.style.display = "none";
+            calculatorTitle.innerHTML = "<b>Interest</b> Fine Calculator";
+        }
+    }
+
+    function calculateFine() {
+
+        const monthlyFineForm = document.getElementById("monthlyFineForm").style.display === "block";
+        const monthsLateInput = document.getElementById("monthsLate");
+        const monthlyAmountInput = document.getElementById("monthlyAmount");
+        const daysLateInput = document.getElementById("daysLate");
+        const resultDiv = document.getElementById("result");
+        const tableContainer = document.getElementById("tableContainer");
+        
+
+        
+        resultDiv.classList.remove("show");
+        tableContainer.innerHTML = "";
+
+        if (monthlyFineForm) {
+            const monthsLate = parseInt(monthsLateInput.value);
+            const monthlyAmount = parseFloat(monthlyAmountInput.value);
+
+            if (isNaN(monthsLate) || monthsLate < 1 || isNaN(monthlyAmount) || monthlyAmount < 1) {
+                resultDiv.innerText = "Please enter valid values for months and monthly amount.";
+                resultDiv.classList.add("show");
+                return;
+            }
+
+            let totalFine = 0;
+            const fineRate = monthlyAmount > 500 ? (monthlyAmount * 0.02) : 10;
+
+            for (let month = 1; month <= monthsLate; month++) {
+                totalFine += month * fineRate;
+            }
+
+            resultDiv.innerText = `Total Fine: ₹${totalFine.toFixed(2)}`;
+
+            const table = document.createElement("table");
+            table.classList.add("table", "table-bordered", "mt-3");
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Month</th>
+                        <th>Fine (₹)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            `;
+            const tbody = table.querySelector("tbody");
+
+            for (let month = 1; month <= monthsLate; month++) {
+                const monthlyFine = month * fineRate;
+                const row = document.createElement("tr");
+                row.innerHTML = `<td>${month}</td><td>₹${monthlyFine.toFixed(2)}</td>`;
+                tbody.appendChild(row);
+            }
+
+            tableContainer.appendChild(table);
+        } else {
+            const daysLate = parseInt(daysLateInput.value);
+
+            if (isNaN(daysLate) || daysLate < 1) {
+                resultDiv.innerText = "Please enter a valid number of days.";
+                resultDiv.classList.add("show");
+                return;
+            }
+
+            const totalFine = daysLate * 50;
+            resultDiv.innerText = `Total Fine: ₹${totalFine}`;
+        }
+        
+        setTimeout(() => resultDiv.classList.add("show"), 100);
+    }
+</script>
+
+</body>
+</html>
